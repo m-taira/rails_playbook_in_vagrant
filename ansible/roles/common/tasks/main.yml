@@ -1,0 +1,15 @@
+- name: sudo configured
+  sudo: yes
+  copy: src="sudoers" dest="/etc/sudoers" owner=root group=root mode=0440
+  tags: users
+
+- name: enabled iptables
+  sudo: yes
+  service: name=iptables state=stopped enabled=no
+  tags: iptables
+
+# git
+- name: git is installed
+  sudo: yes
+  yum: pkg=git state=installed
+  tags: git

@@ -1,0 +1,10 @@
+# httpd
+- name: httpd is installed
+  sudo: yes
+  yum: pkg=httpd state=installed
+  tags: httpd
+
+- name: httpd is running and enabled
+  sudo: yes
+  service: name=httpd state=running enabled=yes
+  tags: httpd

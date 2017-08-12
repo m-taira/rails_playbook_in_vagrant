@@ -1,0 +1,54 @@
+# ruby
+- name: rbenv is installed
+  sudo: yes
+  git: repo=https://github.com/sstephenson/rbenv.git dest={{ rbenv_dir }} version=master accept_hostkey=yes
+  tags: ruby
+
+- name: setup rbenv
+  sudo: yes
+  copy: src=rbenv.sh dest=/etc/profile.d
+  tags: ruby
+
+- name: install ruby-build
+  sudo: yes
+  git: repo=https://github.com/sstephenson/ruby-build.git dest={{ rbenv_dir }}/plugins/ruby-build accept_hostkey=yes
+  tags: ruby
+
+- name: install ruby dependncies
+  sudo: yes
+  yum: name={{ item }} state=latest
+  with_items:
+    - gcc
+    - gcc-c++
+    - glibc-headers
+    - openssl-devel
+    - readline-devel
+    - libyaml-devel
+    - zlib-devel
+    - libffi-devel
+    - libxml2-devel
+    - libxslt-devel
+  tags: ruby
+
+- name: check ruby installed
+  sudo: yes
+  shell: /bin/bash -lc "rbenv versions | grep {{ ruby_version }}"
+  register: ruby_installed
+  ignore_errors: yes
+  tags: ruby
+
+- name: install ruby
+  sudo: yes
+  shell: /bin/bash -lc "rbenv install {{ ruby_version }} && rbenv rehash && rbenv global {{ ruby_version }}"
+  tags: ruby
+  when: ruby_installed|failed
+
+- name: install bundler
+  sudo: yes
+  shell: /bin/bash -lc "gem install bundler"
+  tags: ruby
+
+- name: install rails
+  sudo: yes
+  shell: /bin/bash -lc "gem install rails"
+  tags: rails

@@ -1,0 +1,21 @@
+# php
+- name: php is installed
+  sudo: yes
+  yum: pkg={{ item }} state=installed
+  with_items:
+    - php
+    - php-mbstring
+    - php-common
+    - php-pear
+    - php-cli
+    - php-mysql
+  notify:
+    - restart httpd
+  tags: php
+
+- name: php is configured
+  sudo: yes
+  lineinfile: dest="/etc/php.ini" state=present regexp="^\;date.timezone =$" line="date.timezone = Asia/Tokyo" backrefs=yes
+  notify:
+    - restart httpd
+  tags: php

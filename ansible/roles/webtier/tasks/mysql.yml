@@ -1,0 +1,13 @@
+# mysql
+- name: mysql is installed
+  sudo: yes
+  yum: pkg={{ item }} state=installed
+  with_items:
+    - mysql-server
+    - mysql-devel
+  tags: mysqld
+
+- name: mysqld is running and enabled
+  sudo: yes
+  service: name=mysqld state=running enabled=yes
+  tags: mysqld
